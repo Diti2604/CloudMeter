@@ -2,13 +2,18 @@ import React, { useEffect, useState } from "react";
 import { fetchCostSummary, fetchUnusedResources, requestWeeklyReport, subscribeBudgetAlerts } from "../api/costApi";
 import { CostSummary, UnusedResource } from "../types";
 import CostChart from "./CostChart";
-import { DollarSign, TrendingDown, TrendingUp, AlertTriangle, Mail, Download } from "./Icons";
+import { DollarSign, TrendingDown, TrendingUp, AlertTriangle, Mail, Download, FileText } from "./Icons";
 
-export default function Dashboard(): JSX.Element {
+interface DashboardProps {
+  onNavigateToReports: () => void;
+}
+
+export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.Element {
   const [summary, setSummary] = useState<CostSummary | null>(null);
   const [unused, setUnused] = useState<UnusedResource[]>([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
+  const [budgetThreshold, setBudgetThreshold] = useState("");
   const [reportLoading, setReportLoading] = useState(false);
   const [subscribeLoading, setSubscribeLoading] = useState(false);
 
@@ -45,11 +50,16 @@ export default function Dashboard(): JSX.Element {
   };
 
   const subscribe = async () => {
-    if (!email) return;
+    if (!email || !budgetThreshold) return;
+    const threshold = parseFloat(budgetThreshold);
+    if (isNaN(threshold) || threshold <= 0) {
+      alert("Please enter a valid budget threshold amount.");
+      return;
+    }
     setSubscribeLoading(true);
     try {
-      await subscribeBudgetAlerts({ budgetId: "default", email, thresholdPercent: 100 });
-      alert("Successfully subscribed to budget alerts!");
+      await subscribeBudgetAlerts({ budgetId: "default", email, thresholdPercent: threshold });
+      alert(`Successfully subscribed to budget alerts! You'll be notified when spending exceeds $${threshold.toFixed(2)}.`);
     } catch (err) {
       alert("Failed to subscribe. Please try again.");
     } finally {
@@ -157,6 +167,20 @@ export default function Dashboard(): JSX.Element {
       {/* Actions */}
       <div className="actions-grid">
         <div className="card action-card">
+          <h3><FileText size={20} /> Cost Reports</h3>
+          <p>Generate detailed PDF reports with cost analysis and optimization recommendations</p>
+          <div className="action-form">
+            <button 
+              onClick={onNavigateToReports}
+              className="action-button primary"
+            >
+              <FileText size={16} />
+              Generate Report
+            </button>
+          </div>
+        </div>
+
+        <div className="card action-card">
           <h3><Mail size={20} /> Weekly Reports</h3>
           <p>Get detailed cost analysis delivered to your inbox</p>
           <div className="action-form">
@@ -189,9 +213,21 @@ export default function Dashboard(): JSX.Element {
               placeholder="Enter your email"
               className="email-input"
             />
+            <div className="budget-input-group">
+              <span className="currency-symbol">$</span>
+              <input 
+                type="number" 
+                value={budgetThreshold} 
+                onChange={(e) => setBudgetThreshold(e.target.value)} 
+                placeholder="Enter budget threshold"
+                className="budget-input"
+                min="0"
+                step="0.01"
+              />
+            </div>
             <button 
               onClick={subscribe} 
-              disabled={!email || subscribeLoading}
+              disabled={!email || !budgetThreshold || subscribeLoading}
               className="action-button secondary"
             >
               <Mail size={16} />

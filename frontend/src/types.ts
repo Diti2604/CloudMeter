@@ -23,5 +23,27 @@ export type WeeklyReportRequest = {
 export type SubscribeRequest = {
   budgetId: string;
   email: string;
-  thresholdPercent: number;
+  thresholdPercent: number; // This now represents the dollar amount threshold
+};
+
+export type WeeklyReport = {
+  period: string;
+  totalCost: number;
+  weeklyChange: number;
+  potentialSavings: number;
+  resourceCount: number;
+  costBreakdown: Array<{
+    service: string;
+    currentCost: number;
+    previousCost: number;
+    change: number;
+  }>;
+  unusedResources: Array<{
+    type: string;
+    id: string;
+    region: string;
+    monthlySavings: number;
+    recommendation: string;
+  }>;
+  recommendations: string[];
 };

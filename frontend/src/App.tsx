@@ -1,17 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
+import ReportsPage from "./components/ReportsPage";
+
+type Page = 'dashboard' | 'reports';
 
 export default function App(): JSX.Element {
+  const [currentPage, setCurrentPage] = useState<Page>('dashboard');
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'reports':
+        return <ReportsPage onBack={() => setCurrentPage('dashboard')} />;
+      default:
+        return <Dashboard onNavigateToReports={() => setCurrentPage('reports')} />;
+    }
+  };
+
   return (
     <div className="app">
-      <header className="header">
-        <h1>Cloud Cost Optimizer</h1>
-        <p className="subtitle">Weekly cost insights, unused resources, and budget alerts</p>
-      </header>
+      {currentPage === 'dashboard' && (
+        <header className="header">
+          <h1>Cloud Cost Optimizer</h1>
+          <p className="subtitle">Weekly cost insights, unused resources, and budget alerts</p>
+        </header>
+      )}
       <main>
-        <Dashboard />
+        {renderPage()}
       </main>
-      <footer className="footer">© {new Date().getFullYear()} Cost Optimizer</footer>
+      {currentPage === 'dashboard' && (
+        <footer className="footer">© {new Date().getFullYear()} Cost Optimizer</footer>
+      )}
     </div>
   );
 }
