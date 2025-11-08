@@ -19,7 +19,7 @@ const mockUnusedResources: UnusedResource[] = [
   {
     id: "i-0123456789abcdef0",
     type: "EC2 Instance",
-    region: "us-east-1",
+    region: "eu-central-1",
     estimatedMonthlySavingsUsd: 45.60,
     details: "t3.medium instance stopped for 15 days"
   },
@@ -56,7 +56,7 @@ const mockWeeklyReport: WeeklyReport = {
     {
       type: "EC2 Instance",
       id: "i-0123456789abcdef0",
-      region: "us-east-1",
+      region: "eu-central-1",
       monthlySavings: 45.60,
       recommendation: "Stop or terminate this t3.medium instance that has been idle for 15 days"
     },
@@ -77,7 +77,7 @@ const mockWeeklyReport: WeeklyReport = {
     {
       type: "NAT Gateway",
       id: "nat-0fedcba987654321",
-      region: "us-east-1",
+      region: "eu-central-1",
       monthlySavings: 90.00,
       recommendation: "Replace NAT Gateway with NAT Instance for lower traffic workloads"
     }

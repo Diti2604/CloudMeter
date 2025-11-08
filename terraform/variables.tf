@@ -1,16 +1,8 @@
 
-variable "account_id" {
-  type        = string
-  description = "Account ID of new playgrounds"
-
-  default     = "211125323087"
-
-}
-
 variable "aws_region" {
   type        = string
   description = "Value for specifying AWS Region"
-  default     = "us-east-1"
+  default     = "eu-central-1"
 }
 
 variable "vpc_cidr" {
@@ -123,7 +115,7 @@ variable "max_wait_seconds" {
 # variable "docker_image_uri" {
 #   type        = string
 #   description = "The full URI of the Docker image to deploy to the EKS cluster."
-#   default     = "339712709499.dkr.ecr.us-east-1.amazonaws.com/fastapi-app:latest"
+#   default     = "339712709499.dkr.ecr.eu-central-1.amazonaws.com/fastapi-app:latest"
 # }
 
 

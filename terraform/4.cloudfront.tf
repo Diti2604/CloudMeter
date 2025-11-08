@@ -1,5 +1,5 @@
 resource "aws_cloudfront_distribution" "s3_distribution" {
-  aliases = ["login.${local.root_domain}"] 
+  aliases = ["cloudmeter.indritcloud.com"] 
  origin {
   domain_name = aws_s3_bucket_website_configuration.site.website_endpoint 
   origin_id   = local.s3_origin_id
@@ -29,7 +29,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 viewer_certificate {
-  acm_certificate_arn      = aws_acm_certificate.imported.arn
+  acm_certificate_arn      = aws_acm_certificate.cert.arn
   ssl_support_method       = "sni-only"
   minimum_protocol_version = "TLSv1.2_2021"
 }

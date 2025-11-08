@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "s3_bucket" {
-  bucket = "my-tf-bucket-${var.account_id}-for-static-website-hosting"
-
+  bucket = "my-s3-bucket-for-static-website-hosting-5843205867340"
   tags = {
     Name = "My-bucket"
   }
