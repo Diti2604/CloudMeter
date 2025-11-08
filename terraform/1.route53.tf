@@ -24,6 +24,7 @@ resource "aws_route53_record" "cloudmeter" {
   zone_id = data.aws_route53_zone.main.zone_id
   name    = "cloudmeter.indritcloud.com"
   type    = "A"
+  allow_overwrite = true
 
   alias {
     name                   = aws_cloudfront_distribution.s3_distribution.domain_name

@@ -20,8 +20,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     target_origin_id = local.s3_origin_id
     origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
     compress                   = true
-    viewer_protocol_policy = "allow-all"
+    viewer_protocol_policy = "redirect-to-https"
   }
+
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"

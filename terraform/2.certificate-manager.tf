@@ -18,6 +18,10 @@ resource "aws_acm_certificate" "cert" {
     domain_name       = "indritcloud.com"
     validation_domain = "indritcloud.com"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 resource "aws_acm_certificate_validation" "cert" {
   provider                = aws.us
