@@ -26,7 +26,7 @@ resource "aws_lambda_function" "lambda_reports" {
   filename         = data.archive_file.lambda_zip_reports.output_path
   function_name    = "cost-optimizer-reports"
   role             = aws_iam_role.iam_for_lambda_reports.arn
-  handler          = "index.handler"
+  handler          = "reports-lambda.lambda_handler"
   source_code_hash = data.archive_file.lambda_zip_reports.output_base64sha256
-  runtime          = "nodejs20.x"
+  runtime          = "python3.13"  
 }
