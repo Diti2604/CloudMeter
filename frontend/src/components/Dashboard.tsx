@@ -76,31 +76,30 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
     );
   }
 
-  const totalSavings = unused.reduce((acc, resource) => acc + resource.estimatedMonthlySavingsUsd, 0);
+  const totalSavings = Array.isArray(unused) ? unused.reduce((acc, resource) => acc + resource.estimatedMonthlySavingsUsd, 0) : 0;
 
   return (
     <div className="dashboard">
-      {/* Key Metrics */}
       <div className="metrics-grid">
         <div className="metric-card">
           <div className="metric-icon">
             <DollarSign size={24} />
           </div>
           <div className="metric-content">
-            <div className="metric-value">${summary?.total.toFixed(2) || "0.00"}</div>
+            <div className="metric-value">${(summary?.totalCost || summary?.total || 0).toFixed(2)}</div>
             <div className="metric-label">Total Cost</div>
           </div>
         </div>
 
         <div className="metric-card">
-          <div className={`metric-icon ${summary && summary.weeklyDeltaPercent < 0 ? 'positive' : 'negative'}`}>
-            {summary && summary.weeklyDeltaPercent < 0 ? <TrendingDown size={24} /> : <TrendingUp size={24} />}
+          <div className={`metric-icon ${summary && typeof summary.weeklyDeltaPercent === 'number' && summary.weeklyDeltaPercent < 0 ? 'positive' : 'negative'}`}>
+            {summary && typeof summary.weeklyDeltaPercent === 'number' && summary.weeklyDeltaPercent < 0 ? <TrendingDown size={24} /> : <TrendingUp size={24} />}
           </div>
           <div className="metric-content">
-            <div className={`metric-value ${summary && summary.weeklyDeltaPercent < 0 ? 'positive' : 'negative'}`}>
-              {summary?.weeklyDeltaPercent.toFixed(1) || "0.0"}%
+            <div className={`metric-value ${summary && typeof summary.weeklyDeltaPercent === 'number' && summary.weeklyDeltaPercent < 0 ? 'positive' : 'negative'}`}>
+              {typeof summary?.weeklyDeltaPercent === 'number' ? `${summary.weeklyDeltaPercent.toFixed(1)}%` : summary?.trend || "0.0%"}
             </div>
-            <div className="metric-label">Weekly Change</div>
+            <div className="metric-label">{summary?.trend ? "Trend" : "Weekly Change"}</div>
           </div>
         </div>
 
@@ -109,7 +108,7 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
             <AlertTriangle size={24} />
           </div>
           <div className="metric-content">
-            <div className="metric-value">{unused.length}</div>
+            <div className="metric-value">{Array.isArray(unused) ? unused.length : 0}</div>
             <div className="metric-label">Unused Resources</div>
           </div>
         </div>
@@ -128,9 +127,9 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
       {/* Cost Chart */}
       <div className="chart-section">
         <div className="card">
-          <h2>Cost Breakdown by Tags</h2>
-          {summary?.byTag ? (
-            <CostChart data={summary.byTag} />
+          <h2>Cost Breakdown by Services</h2>
+          {(summary?.byTag || summary?.byService) ? (
+            <CostChart data={summary.byTag || summary.byService?.map(item => ({ tag: item.service, cost: item.cost })) || []} />
           ) : (
             <div className="no-data">No cost data available</div>
           )}
@@ -140,7 +139,7 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
       {/* Unused Resources */}
       <div className="card">
         <h2>Unused Resources</h2>
-        {unused.length ? (
+        {Array.isArray(unused) && unused.length ? (
           <div className="resources-list">
             {unused.map((resource) => (
               <div key={resource.id} className="resource-item">

@@ -1,8 +1,13 @@
 export type CostSummary = {
-  total: number; // USD
+  // Primary fields (from API)
+  totalCost?: number; // USD (matches API response)
   periodStart: string; // ISO
   periodEnd: string; // ISO
-  weeklyDeltaPercent: number;
+  trend?: string; // trend description from API
+  byService?: Array<{ service: string; cost: number }>; // matches API response
+  // Legacy fields for backward compatibility
+  total: number; // Keep this required for backward compatibility
+  weeklyDeltaPercent?: number;
   byTag?: Array<{ tag: string; cost: number }>;
 };
 

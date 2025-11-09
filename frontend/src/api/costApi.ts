@@ -1,5 +1,8 @@
-// Mock data for frontend development - replace with real API calls later
+import axios from 'axios';
 import { CostSummary, UnusedResource, WeeklyReportRequest, SubscribeRequest, WeeklyReport } from "../types";
+
+// Use the API Gateway URL from your terraform output
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://mkkc97poc5.execute-api.us-east-1.amazonaws.com/prod";
 
 // Mock data
 const mockCostSummary: CostSummary = {
@@ -94,31 +97,101 @@ const mockWeeklyReport: WeeklyReport = {
 };
 
 export async function fetchCostSummary(): Promise<CostSummary> {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 800));
-  return mockCostSummary;
+  try {
+    console.log("Fetching cost data from:", `${BASE_URL}/api/costs`);
+    const res = await axios.get(`${BASE_URL}/api/costs`);
+    console.log("API response:", res.data);
+    
+    // The API returns the data directly, not wrapped in another object
+    const apiData = res.data;
+    
+    // Map API response to expected format
+    const mappedData: CostSummary = {
+      // Primary fields from API
+      totalCost: apiData.totalCost || 0,
+      periodStart: apiData.periodStart || new Date().toISOString(),
+      periodEnd: apiData.periodEnd || new Date().toISOString(),
+      trend: apiData.trend || "",
+      byService: apiData.byService || [],
+      // Required legacy fields
+      total: apiData.totalCost || 0,
+      byTag: apiData.byService?.map((item: any) => ({
+        tag: item.service,
+        cost: item.cost
+      })) || []
+    };
+    
+    console.log("Mapped data:", mappedData);
+    return mappedData;
+  } catch (error) {
+    console.error("Failed to fetch cost data from API:", error);
+    console.warn("Using fallback mock data");
+    // Fallback to mock data
+    await new Promise(resolve => setTimeout(resolve, 800));
+    return {
+      ...mockCostSummary,
+      totalCost: mockCostSummary.total,
+      total: mockCostSummary.total, // Ensure required field is present
+      byService: mockCostSummary.byTag?.map(item => ({
+        service: item.tag,
+        cost: item.cost
+      })) || []
+    };
+  }
 }
 
 export async function fetchUnusedResources(): Promise<UnusedResource[]> {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 600));
-  return mockUnusedResources;
+  try {
+    const res = await axios.get(`${BASE_URL}/api/audit`);
+    return res.data;
+  } catch (error) {
+    console.warn("Failed to fetch audit data from API, using mock data:", error);
+    // Fallback to mock data
+    await new Promise(resolve => setTimeout(resolve, 600));
+    return mockUnusedResources;
+  }
+}
+
+export async function fetchLatestReport(): Promise<any> {
+  try {
+    const res = await axios.get(`${BASE_URL}/api/reports`);
+    return res.data;
+  } catch (error) {
+    console.warn("Failed to fetch report data from API:", error);
+    throw error;
+  }
 }
 
 export async function requestWeeklyReport(payload: WeeklyReportRequest): Promise<void> {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  console.log("Weekly report requested:", payload);
+  try {
+    await axios.post(`${BASE_URL}/api/reports/weekly`, payload);
+  } catch (error) {
+    console.warn("Failed to request weekly report, using mock:", error);
+    // Simulate API delay for fallback
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("Weekly report requested:", payload);
+  }
 }
 
 export async function subscribeBudgetAlerts(payload: SubscribeRequest): Promise<void> {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  console.log("Subscribed to budget alerts:", payload);
+  try {
+    await axios.post(`${BASE_URL}/api/budget/subscribe`, payload);
+  } catch (error) {
+    console.warn("Failed to subscribe to budget alerts, using mock:", error);
+    // Simulate API delay for fallback
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("Subscribed to budget alerts:", payload);
+  }
 }
 
 export async function fetchWeeklyReport(): Promise<WeeklyReport> {
-  // Simulate API delay for report generation
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  return mockWeeklyReport;
+  try {
+    const res = await axios.get(`${BASE_URL}/api/reports/weekly`);
+    return res.data;
+  } catch (error) {
+    console.warn("Failed to fetch weekly report from API, using mock data:", error);
+    // Fallback to mock data
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return mockWeeklyReport;
+  }
 }
