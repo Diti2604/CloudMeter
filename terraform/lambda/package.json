@@ -1,9 +1,0 @@
-﻿{
-  "name": "cost-optimizer-lambda",
-  "version": "1.0.0",
-  "description": "Lambda function for cost optimizer reports",
-  "main": "index.js",
-  "dependencies": {
-    "@aws-sdk/client-s3": "^3.0.0"
-  }
-}
