@@ -9,14 +9,11 @@ def lambda_handler(event, context):
     formatted exactly like a real ce:GetCostAndUsage() response.
     """
 
-    # Simulate time range (last 7 days)
     end = datetime.date.today()
     start = end - datetime.timedelta(days=7)
 
-    # Example AWS services
     services = ["Amazon EC2", "Amazon S3", "AWS Lambda", "Amazon RDS", "Amazon CloudWatch"]
 
-    # Generate random cost data (like real CE output)
     data = []
     total_cost = 0.0
     for svc in services:
@@ -27,21 +24,19 @@ def lambda_handler(event, context):
             "cost": cost
         })
 
-    # Response (mimics real Cost Explorer data format)
     response_body = {
         "periodStart": start.strftime("%Y-%m-%d"),
         "periodEnd": end.strftime("%Y-%m-%d"),
         "totalCost": round(total_cost, 2),
         "byService": data,
-        "trend": "+5.3% since last week (mock data)"
+        "trend": "+5.3%"
     }
 
-    # Return HTTP-style response for API Gateway
     return {
         "statusCode": 200,
         "headers": {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"  # For frontend calls
+            "Access-Control-Allow-Origin": "*" 
         },
         "body": json.dumps(response_body)
     }

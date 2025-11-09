@@ -7,7 +7,6 @@ def lambda_handler(event, context):
     prefix = "reports/"
 
     try:
-        # 1️⃣ List objects under prefix
         response = s3.list_objects_v2(Bucket=bucket, Prefix=prefix)
 
         if 'Contents' not in response or len(response['Contents']) == 0:
@@ -16,19 +15,16 @@ def lambda_handler(event, context):
                 "body": json.dumps({"error": "No reports found."})
             }
 
-        # 2️⃣ Sort by LastModified (descending)
         sorted_objs = sorted(response['Contents'], key=lambda x: x['LastModified'], reverse=True)
         latest_key = sorted_objs[0]['Key']
 
-        # 3️⃣ Get the latest object
         obj = s3.get_object(Bucket=bucket, Key=latest_key)
         file_content = obj['Body'].read().decode('utf-8')
 
-        # 4️⃣ Return response
         return {
             "statusCode": 200,
             "headers": {"Content-Type": "application/json"},
-            "body": file_content  # already JSON if your report is JSON
+            "body": file_content  
         }
 
     except Exception as e:
