@@ -12,26 +12,26 @@ module "s3_bucket" {
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "reports_lifecycle" {
-  bucket = module.s3_bucket.s3_bucket_id
+# resource "aws_s3_bucket_lifecycle_configuration" "reports_lifecycle" {
+#   bucket = module.s3_bucket.s3_bucket_id
 
-  rule {
-    id     = "reports-week2-expire"
-    status = "Enabled"
+#   rule {
+#     id     = "reports-week2-expire"
+#     status = "Enabled"
 
-    filter {
-      prefix = "reports/week2/"
-    }
+#     filter {
+#       prefix = "reports/week2/"
+#     }
 
-    expiration {
-      days = 7
-    }
+#     expiration {
+#       days = 7
+#     }
 
-    abort_incomplete_multipart_upload {
-      days_after_initiation = 7
-    }
-  }
-}
+#     abort_incomplete_multipart_upload {
+#       days_after_initiation = 7
+#     }
+#   }
+# }
 
 output "s3-bucket-name" {
   value = "my-remote-s3-bucket-5843205867340"

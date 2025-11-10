@@ -16,6 +16,41 @@ resource "aws_iam_role" "iam_for_lambda_costs" {
   assume_role_policy = data.aws_iam_policy_document.assume_role_costs.json
 }
 
+# IAM policy for Cost Explorer access
+resource "aws_iam_policy" "lambda_cost_explorer" {
+  name        = "lambda_cost_explorer_policy"
+  description = "Allow Lambda to access AWS Cost Explorer"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ce:GetCostAndUsage",
+          "ce:GetCostForecast"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "arn:aws:logs:*:*:*"
+      }
+    ]
+  })
+}
+
+# Attach Cost Explorer policy to Lambda role
+resource "aws_iam_role_policy_attachment" "lambda_costs_ce_policy" {
+  role       = aws_iam_role.iam_for_lambda_costs.name
+  policy_arn = aws_iam_policy.lambda_cost_explorer.arn
+}
+
 data "archive_file" "lambda_zip_costs" {
   type        = "zip"
   source_dir  = "${path.module}/lambda"
