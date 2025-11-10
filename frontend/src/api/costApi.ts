@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { CostSummary, WeeklyReportRequest, SubscribeRequest, WeeklyReport } from "../types";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://8xi7yikxek.execute-api.us-east-1.amazonaws.com/prod";
+
+// Log warning if using fallback
+if (!process.env.REACT_APP_API_BASE_URL) {
+  console.warn("REACT_APP_API_BASE_URL not found in environment, using fallback URL:", BASE_URL);
+}
+
 
 const mockCostSummary: CostSummary = {
   total: 1247.85,
@@ -41,9 +47,7 @@ const mockWeeklyReport: WeeklyReport = {
 
 export async function fetchCostSummary(): Promise<CostSummary> {
   try {
-    console.log("Fetching cost data from:", `${BASE_URL}/api/costs`);
     const res = await axios.get(`${BASE_URL}/api/costs`);
-    console.log("API response:", res.data);
     
     // The API returns the data directly, not wrapped in another object
     const apiData = res.data;
@@ -64,7 +68,6 @@ export async function fetchCostSummary(): Promise<CostSummary> {
       })) || []
     };
     
-    console.log("Mapped data:", mappedData);
     return mappedData;
   } catch (error) {
     console.error("Failed to fetch cost data from API:", error);
@@ -100,7 +103,6 @@ export async function requestWeeklyReport(payload: WeeklyReportRequest): Promise
     console.warn("Failed to request weekly report, using mock:", error);
     // Simulate API delay for fallback
     await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log("Weekly report requested:", payload);
   }
 }
 
@@ -111,7 +113,6 @@ export async function subscribeBudgetAlerts(payload: SubscribeRequest): Promise<
     console.warn("Failed to subscribe to budget alerts, using mock:", error);
     // Simulate API delay for fallback
     await new Promise(resolve => setTimeout(resolve, 1000));
-    console.log("Subscribed to budget alerts:", payload);
   }
 }
 
