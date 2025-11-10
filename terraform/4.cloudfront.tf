@@ -25,7 +25,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
 
-    # Use managed cache policies for better performance
     cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 

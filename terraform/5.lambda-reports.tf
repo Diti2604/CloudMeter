@@ -16,7 +16,6 @@ resource "aws_iam_role" "iam_for_lambda_reports" {
   assume_role_policy = data.aws_iam_policy_document.assume_role_reports.json
 }
 
-# IAM policy for S3 access
 resource "aws_iam_policy" "lambda_reports_s3" {
   name        = "lambda_reports_s3_policy"
   description = "Allow Lambda to read from S3 reports bucket"
@@ -48,7 +47,6 @@ resource "aws_iam_policy" "lambda_reports_s3" {
   })
 }
 
-# Attach S3 policy to Lambda role
 resource "aws_iam_role_policy_attachment" "lambda_reports_s3_policy" {
   role       = aws_iam_role.iam_for_lambda_reports.name
   policy_arn = aws_iam_policy.lambda_reports_s3.arn
