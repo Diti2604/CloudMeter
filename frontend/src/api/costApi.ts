@@ -1,10 +1,8 @@
 import axios from 'axios';
 import { CostSummary, WeeklyReportRequest, SubscribeRequest, WeeklyReport } from "../types";
 
-// Use the API Gateway URL from your terraform output
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://xu90xxqys2.execute-api.us-east-1.amazonaws.com/prod";
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://v7pzq3hit6.execute-api.us-east-1.amazonaws.com/prod";
 
-// Mock data
 const mockCostSummary: CostSummary = {
   total: 1247.85,
   periodStart: "2024-10-01T00:00:00Z",
