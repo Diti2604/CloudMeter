@@ -20,7 +20,7 @@ export default function App(): JSX.Element {
     <div className="app">
       {currentPage === 'dashboard' && (
         <header className="header">
-          <h1>Cloud Cost Optimizer</h1>
+          <h1>CloudMeter</h1>
           <p className="subtitle">Weekly cost insights, unused resources, and budget alerts</p>
         </header>
       )}

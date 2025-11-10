@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { CostSummary, WeeklyReportRequest, SubscribeRequest, WeeklyReport } from "../types";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://8xi7yikxek.execute-api.us-east-1.amazonaws.com/prod";
+const BASE_URL = process.env.REACT_APP_API_BASE_URL
 
-// Log warning if using fallback
 if (!process.env.REACT_APP_API_BASE_URL) {
   console.warn("REACT_APP_API_BASE_URL not found in environment, using fallback URL:", BASE_URL);
 }
