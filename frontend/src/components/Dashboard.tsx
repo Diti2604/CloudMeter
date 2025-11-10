@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { fetchCostSummary, requestWeeklyReport, subscribeBudgetAlerts } from "../api/costApi";
+import { fetchCostSummary } from "../api/costApi";
 import { CostSummary } from "../types";
 import CostChart from "./CostChart";
-import { DollarSign, TrendingDown, TrendingUp, Mail, Download, FileText } from "./Icons";
+import { DollarSign, TrendingDown, TrendingUp, Mail, FileText, AlertTriangle } from "./Icons";
 
 interface DashboardProps {
   onNavigateToReports: () => void;
@@ -11,10 +11,6 @@ interface DashboardProps {
 export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.Element {
   const [summary, setSummary] = useState<CostSummary | null>(null);
   const [loading, setLoading] = useState(true);
-  const [email, setEmail] = useState("");
-  const [budgetThreshold, setBudgetThreshold] = useState("");
-  const [reportLoading, setReportLoading] = useState(false);
-  const [subscribeLoading, setSubscribeLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -33,37 +29,6 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
       mounted = false;
     };
   }, []);
-
-  const sendWeeklyReport = async () => {
-    if (!summary || !email) return;
-    setReportLoading(true);
-    try {
-      await requestWeeklyReport({ startDate: summary.periodStart, endDate: summary.periodEnd, email });
-      alert("Weekly report requested successfully!");
-    } catch (err) {
-      alert("Failed to request report. Please try again.");
-    } finally {
-      setReportLoading(false);
-    }
-  };
-
-  const subscribe = async () => {
-    if (!email || !budgetThreshold) return;
-    const threshold = parseFloat(budgetThreshold);
-    if (isNaN(threshold) || threshold <= 0) {
-      alert("Please enter a valid budget threshold amount.");
-      return;
-    }
-    setSubscribeLoading(true);
-    try {
-      await subscribeBudgetAlerts({ budgetId: "default", email, thresholdPercent: threshold });
-      alert(`Successfully subscribed to budget alerts! You'll be notified when spending exceeds $${threshold.toFixed(2)}.`);
-    } catch (err) {
-      alert("Failed to subscribe. Please try again.");
-    } finally {
-      setSubscribeLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -112,75 +77,38 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="actions-grid">
-        <div className="card action-card">
-          <h3><FileText size={20} /> Cost Reports</h3>
-          <p>Generate detailed PDF reports with cost analysis and optimization recommendations</p>
-          <div className="action-form">
-            <button 
-              onClick={onNavigateToReports}
-              className="action-button primary"
-            >
-              <FileText size={16} />
-              Generate Report
-            </button>
+      {/* Automation Features */}
+      <div className="automation-grid">
+        <div className="card automation-card">
+          <div className="automation-header">
+            <FileText size={24} />
+            <h3>Cost Reports</h3>
+          </div>
+          <div className="automation-purpose">Cost Reports</div>
+          <div className="automation-description">
+            "Weekly cost report automatically generated every Monday at 9 AM."
           </div>
         </div>
 
-        <div className="card action-card">
-          <h3><Mail size={20} /> Weekly Reports</h3>
-          <p>Get detailed cost analysis delivered to your inbox</p>
-          <div className="action-form">
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              placeholder="Enter your email"
-              className="email-input"
-            />
-            <button 
-              onClick={sendWeeklyReport} 
-              disabled={!email || reportLoading}
-              className="action-button primary"
-            >
-              <Download size={16} />
-              {reportLoading ? "Requesting..." : "Request Report"}
-            </button>
+        <div className="card automation-card">
+          <div className="automation-header">
+            <Mail size={24} />
+            <h3>Weekly Reports</h3>
+          </div>
+          <div className="automation-purpose">Email </div>
+          <div className="automation-description">
+            "Reports are delivered directly to your verified email via Amazon SES."
           </div>
         </div>
 
-        <div className="card action-card">
-          <h3><Mail size={20} /> Budget Alerts</h3>
-          <p>Get notified when spending exceeds your budget thresholds</p>
-          <div className="action-form">
-            <input 
-              type="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              placeholder="Enter your email"
-              className="email-input"
-            />
-            <div className="budget-input-group">
-              <span className="currency-symbol">$</span>
-              <input 
-                type="number" 
-                value={budgetThreshold} 
-                onChange={(e) => setBudgetThreshold(e.target.value)} 
-                placeholder="Enter budget threshold"
-                className="budget-input"
-                min="0"
-                step="0.01"
-              />
-            </div>
-            <button 
-              onClick={subscribe} 
-              disabled={!email || !budgetThreshold || subscribeLoading}
-              className="action-button secondary"
-            >
-              <Mail size={16} />
-              {subscribeLoading ? "Subscribing..." : "Subscribe to Alerts"}
-            </button>
+        <div className="card automation-card">
+          <div className="automation-header">
+            <AlertTriangle size={24} />
+            <h3>Budget Alerts</h3>
+          </div>
+          <div className="automation-purpose">AWS Budgets</div>
+          <div className="automation-description">
+            "Budget thresholds are monitored through AWS Budgets; alerts are sent when exceeded."
           </div>
         </div>
       </div>

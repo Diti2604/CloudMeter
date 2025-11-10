@@ -321,163 +321,66 @@ body {
 }
 
 /* Actions Grid */
-.actions-grid {
+.automation-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.action-card {
+.automation-card {
   border: 1px solid var(--border);
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 }
 
-.action-card h3 {
+.automation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 212, 255, 0.1);
+}
+
+.automation-header {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0 0 0.5rem 0;
-  color: var(--primary);
-}
-
-.action-card p {
-  color: var(--muted);
+  gap: 0.75rem;
   margin-bottom: 1rem;
 }
 
-.action-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.email-input {
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 1rem;
-  background: var(--bg-secondary);
-  color: var(--text);
-  transition: all 0.3s ease;
-}
-
-.email-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--glow), 0 0 20px rgba(0, 212, 255, 0.1);
-  background: var(--card);
-}
-
-.email-input::placeholder {
-  color: var(--muted);
-}
-
-.budget-input-group {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.currency-symbol {
-  position: absolute;
-  left: 1rem;
+.automation-header svg {
   color: var(--primary);
-  font-weight: 700;
-  font-size: 1.1rem;
-  z-index: 1;
 }
 
-.budget-input {
-  padding: 1rem 1rem 1rem 2.5rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 1rem;
-  background: var(--bg-secondary);
-  color: var(--text);
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.budget-input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--glow), 0 0 20px rgba(0, 212, 255, 0.1);
-  background: var(--card);
-}
-
-.budget-input::placeholder {
-  color: var(--muted);
-}
-
-/* Remove number input arrows */
-.budget-input::-webkit-outer-spin-button,
-.budget-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+.automation-header h3 {
   margin: 0;
-}
-
-.budget-input[type=number] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-.action-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 12px;
+  color: var(--text);
+  font-size: 1.25rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+}
+
+.automation-purpose {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.automation-description {
+  color: var(--text);
   font-size: 1rem;
-  position: relative;
-  overflow: hidden;
+  line-height: 1.6;
+  font-style: italic;
 }
 
-.action-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s;
-}
 
-.action-button:hover::before {
-  left: 100%;
-}
 
-.action-button.primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-  color: white;
-  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
-}
 
-.action-button.primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 212, 255, 0.4);
-}
-
-.action-button.secondary {
-  background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
-  color: white;
-  box-shadow: 0 4px 16px rgba(0, 255, 136, 0.3);
-}
-
-.action-button.secondary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.4);
-}
-
-.action-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none !important;
-}
 
 .no-data {
   text-align: center;
