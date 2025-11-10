@@ -29,7 +29,6 @@ export default function ReportsPage({ onBack }: ReportsPageProps): JSX.Element {
   const downloadPDF = () => {
     if (!report) return;
     
-    // Create a new window with the PDF content
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
     
@@ -37,7 +36,6 @@ export default function ReportsPage({ onBack }: ReportsPageProps): JSX.Element {
     printWindow.document.write(pdfContent);
     printWindow.document.close();
     
-    // Trigger print dialog for PDF generation
     setTimeout(() => {
       printWindow.print();
     }, 100);

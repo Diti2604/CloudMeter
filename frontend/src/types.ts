@@ -1,12 +1,10 @@
 export type CostSummary = {
-  // Primary fields (from API)
-  totalCost?: number; // USD (matches API response)
-  periodStart: string; // ISO
-  periodEnd: string; // ISO
-  trend?: string; // trend description from API
-  byService?: Array<{ service: string; cost: number }>; // matches API response
-  // Legacy fields for backward compatibility
-  total: number; // Keep this required for backward compatibility
+  totalCost?: number; 
+  periodStart: string; 
+  periodEnd: string; 
+  trend?: string; 
+  byService?: Array<{ service: string; cost: number }>; 
+  total: number; 
   weeklyDeltaPercent?: number;
   byTag?: Array<{ tag: string; cost: number }>;
 };
@@ -28,7 +26,7 @@ export type WeeklyReportRequest = {
 export type SubscribeRequest = {
   budgetId: string;
   email: string;
-  thresholdPercent: number; // This now represents the dollar amount threshold
+  thresholdPercent: number; 
 };
 
 export type WeeklyReport = {

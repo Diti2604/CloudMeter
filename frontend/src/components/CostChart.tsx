@@ -16,7 +16,6 @@ export default function CostChart({ data }: CostChartProps): JSX.Element {
     { primary: "#64ffda", secondary: "#4dd0e1" },
   ];
   
-  // Safety check for data
   const safeData = Array.isArray(data) ? data : [];
   const total = safeData.reduce((sum, item) => sum + item.cost, 0);
 
@@ -25,7 +24,6 @@ export default function CostChart({ data }: CostChartProps): JSX.Element {
     return () => clearTimeout(timer);
   }, []);
 
-  // Return early if no data
   if (safeData.length === 0) {
     return (
       <div className="modern-chart">

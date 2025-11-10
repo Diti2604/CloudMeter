@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { CostSummary, WeeklyReportRequest, SubscribeRequest, WeeklyReport } from "../types";
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://v7pzq3hit6.execute-api.us-east-1.amazonaws.com/prod";
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const mockCostSummary: CostSummary = {
   total: 1247.85,
