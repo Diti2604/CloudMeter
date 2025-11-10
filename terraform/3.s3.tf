@@ -40,3 +40,20 @@ resource "aws_s3_bucket_policy" "site" {
 locals {
   s3_origin_id = "myS3Origin"
 }
+
+
+resource "aws_s3_bucket" "example" {
+  bucket = "my-reports-bucket-ko01"
+}
+
+resource "aws_s3_object" "current-reports" {
+  bucket = aws_s3_bucket.example.bucket
+  key    = "reports/current-week"  
+  content = ""        
+}
+
+resource "aws_s3_object" "previous-reports" {
+  bucket = aws_s3_bucket.example.bucket
+  key    = "reports/last-week"  
+  content = ""        
+}
