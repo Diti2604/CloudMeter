@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { fetchCostSummary, fetchUnusedResources, requestWeeklyReport, subscribeBudgetAlerts } from "../api/costApi";
-import { CostSummary, UnusedResource } from "../types";
+import { fetchCostSummary, requestWeeklyReport, subscribeBudgetAlerts } from "../api/costApi";
+import { CostSummary } from "../types";
 import CostChart from "./CostChart";
-import { DollarSign, TrendingDown, TrendingUp, AlertTriangle, Mail, Download, FileText } from "./Icons";
+import { DollarSign, TrendingDown, TrendingUp, Mail, Download, FileText } from "./Icons";
 
 interface DashboardProps {
   onNavigateToReports: () => void;
@@ -10,7 +10,6 @@ interface DashboardProps {
 
 export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.Element {
   const [summary, setSummary] = useState<CostSummary | null>(null);
-  const [unused, setUnused] = useState<UnusedResource[]>([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [budgetThreshold, setBudgetThreshold] = useState("");
@@ -21,10 +20,9 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
     let mounted = true;
     (async () => {
       try {
-        const [s, u] = await Promise.all([fetchCostSummary(), fetchUnusedResources()]);
+        const s = await fetchCostSummary();
         if (!mounted) return;
         setSummary(s);
-        setUnused(u);
       } catch (err) {
         console.error("Load error", err);
       } finally {
@@ -76,8 +74,6 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
     );
   }
 
-  const totalSavings = Array.isArray(unused) ? unused.reduce((acc, resource) => acc + resource.estimatedMonthlySavingsUsd, 0) : 0;
-
   return (
     <div className="dashboard">
       <div className="metrics-grid">
@@ -102,26 +98,6 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
             <div className="metric-label">{summary?.trend ? "Trend" : "Weekly Change"}</div>
           </div>
         </div>
-
-        <div className="metric-card">
-          <div className="metric-icon warning">
-            <AlertTriangle size={24} />
-          </div>
-          <div className="metric-content">
-            <div className="metric-value">{Array.isArray(unused) ? unused.length : 0}</div>
-            <div className="metric-label">Unused Resources</div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="metric-icon positive">
-            <DollarSign size={24} />
-          </div>
-          <div className="metric-content">
-            <div className="metric-value">${totalSavings.toFixed(2)}</div>
-            <div className="metric-label">Potential Savings</div>
-          </div>
-        </div>
       </div>
 
       {/* Cost Chart */}
@@ -134,33 +110,6 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
             <div className="no-data">No cost data available</div>
           )}
         </div>
-      </div>
-
-      {/* Unused Resources */}
-      <div className="card">
-        <h2>Unused Resources</h2>
-        {Array.isArray(unused) && unused.length ? (
-          <div className="resources-list">
-            {unused.map((resource) => (
-              <div key={resource.id} className="resource-item">
-                <div className="resource-main">
-                  <div className="resource-type">{resource.type}</div>
-                  <div className="resource-id">{resource.id}</div>
-                  <div className="resource-region">{resource.region || "Global"}</div>
-                </div>
-                <div className="resource-savings">
-                  <div className="savings-amount">${resource.estimatedMonthlySavingsUsd.toFixed(2)}/mo</div>
-                  <div className="savings-label">Potential Savings</div>
-                </div>
-                {resource.details && (
-                  <div className="resource-details">{resource.details}</div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="no-data">No unused resources found! 🎉</div>
-        )}
       </div>
 
       {/* Actions */}
@@ -202,7 +151,7 @@ export default function Dashboard({ onNavigateToReports }: DashboardProps): JSX.
         </div>
 
         <div className="card action-card">
-          <h3><AlertTriangle size={20} /> Budget Alerts</h3>
+          <h3><Mail size={20} /> Budget Alerts</h3>
           <p>Get notified when spending exceeds your budget thresholds</p>
           <div className="action-form">
             <input 

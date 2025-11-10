@@ -179,10 +179,6 @@ export default function ReportsPage({ onBack }: ReportsPageProps): JSX.Element {
             <div class="summary-label">Weekly Change</div>
           </div>
           <div class="summary-card">
-            <div class="summary-value">$${reportData.potentialSavings.toFixed(2)}</div>
-            <div class="summary-label">Potential Savings</div>
-          </div>
-          <div class="summary-card">
             <div class="summary-value">${reportData.resourceCount}</div>
             <div class="summary-label">Total Resources</div>
           </div>
@@ -214,6 +210,7 @@ export default function ReportsPage({ onBack }: ReportsPageProps): JSX.Element {
           </table>
         </div>
 
+        ${reportData.unusedResources && reportData.unusedResources.length > 0 ? `
         <div class="section">
           <h2>Unused Resources & Optimization Opportunities</h2>
           ${reportData.unusedResources.map(resource => `
@@ -228,6 +225,7 @@ export default function ReportsPage({ onBack }: ReportsPageProps): JSX.Element {
             </div>
           `).join('')}
         </div>
+        ` : ''}
 
         <div class="section">
           <h2>Recommendations</h2>
@@ -313,16 +311,6 @@ export default function ReportsPage({ onBack }: ReportsPageProps): JSX.Element {
                   <div className="summary-label">Weekly Change</div>
                 </div>
               </div>
-
-              <div className="summary-card">
-                <div className="summary-icon positive">
-                  <DollarSign size={24} />
-                </div>
-                <div className="summary-info">
-                  <div className="summary-value">${report.potentialSavings.toFixed(2)}</div>
-                  <div className="summary-label">Potential Savings</div>
-                </div>
-              </div>
             </div>
 
             {/* Cost Breakdown Table */}
@@ -354,34 +342,36 @@ export default function ReportsPage({ onBack }: ReportsPageProps): JSX.Element {
               </div>
             </div>
 
-            {/* Unused Resources */}
-            <div className="report-section">
-              <h3>Optimization Opportunities</h3>
-              <div className="unused-resources">
-                {report.unusedResources.map((resource, index) => (
-                  <div key={index} className="unused-resource-card">
-                    <div className="resource-header">
-                      <div className="resource-type">{resource.type}</div>
-                      <div className="savings-badge">${resource.monthlySavings.toFixed(2)}/mo</div>
+            {/* Unused Resources - Only show if there are any */}
+            {report.unusedResources && report.unusedResources.length > 0 && (
+              <div className="report-section">
+                <h3>Optimization Opportunities</h3>
+                <div className="unused-resources">
+                  {report.unusedResources.map((resource, index) => (
+                    <div key={index} className="unused-resource-card">
+                      <div className="resource-header">
+                        <div className="resource-type">{resource.type}</div>
+                        <div className="savings-badge">${resource.monthlySavings.toFixed(2)}/mo</div>
+                      </div>
+                      <div className="resource-details">
+                        <div className="resource-field">
+                          <span className="field-label">Resource ID:</span>
+                          <span className="field-value">{resource.id}</span>
+                        </div>
+                        <div className="resource-field">
+                          <span className="field-label">Region:</span>
+                          <span className="field-value">{resource.region}</span>
+                        </div>
+                        <div className="resource-field">
+                          <span className="field-label">Recommendation:</span>
+                          <span className="field-value">{resource.recommendation}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="resource-details">
-                      <div className="resource-field">
-                        <span className="field-label">Resource ID:</span>
-                        <span className="field-value">{resource.id}</span>
-                      </div>
-                      <div className="resource-field">
-                        <span className="field-label">Region:</span>
-                        <span className="field-value">{resource.region}</span>
-                      </div>
-                      <div className="resource-field">
-                        <span className="field-label">Recommendation:</span>
-                        <span className="field-value">{resource.recommendation}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Recommendations */}
             <div className="report-section">

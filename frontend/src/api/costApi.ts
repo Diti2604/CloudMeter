@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { CostSummary, UnusedResource, WeeklyReportRequest, SubscribeRequest, WeeklyReport } from "../types";
+import { CostSummary, WeeklyReportRequest, SubscribeRequest, WeeklyReport } from "../types";
 
 // Use the API Gateway URL from your terraform output
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://mkkc97poc5.execute-api.us-east-1.amazonaws.com/prod";
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://g1w63aqrf7.execute-api.us-east-1.amazonaws.com/prod";
 
 // Mock data
 const mockCostSummary: CostSummary = {
@@ -18,35 +18,11 @@ const mockCostSummary: CostSummary = {
   ]
 };
 
-const mockUnusedResources: UnusedResource[] = [
-  {
-    id: "i-0123456789abcdef0",
-    type: "EC2 Instance",
-    region: "eu-central-1",
-    estimatedMonthlySavingsUsd: 45.60,
-    details: "t3.medium instance stopped for 15 days"
-  },
-  {
-    id: "vol-0987654321fedcba0",
-    type: "EBS Volume",
-    region: "us-west-2",
-    estimatedMonthlySavingsUsd: 12.30,
-    details: "50GB gp3 volume unattached"
-  },
-  {
-    id: "snap-abcdef1234567890",
-    type: "EBS Snapshot",
-    region: "eu-west-1",
-    estimatedMonthlySavingsUsd: 8.75,
-    details: "Snapshot older than 30 days"
-  }
-];
-
 const mockWeeklyReport: WeeklyReport = {
   period: "October 28 - November 3, 2024",
   totalCost: 1247.85,
   weeklyChange: -12.5,
-  potentialSavings: 156.65,
+  potentialSavings: 0,
   resourceCount: 47,
   costBreakdown: [
     { service: "EC2 Instances", currentCost: 487.20, previousCost: 532.10, change: -8.4 },
@@ -55,44 +31,13 @@ const mockWeeklyReport: WeeklyReport = {
     { service: "Lambda Functions", currentCost: 45.80, previousCost: 52.20, change: -12.3 },
     { service: "CloudWatch", currentCost: 191.20, previousCost: 187.95, change: 1.7 }
   ],
-  unusedResources: [
-    {
-      type: "EC2 Instance",
-      id: "i-0123456789abcdef0",
-      region: "eu-central-1",
-      monthlySavings: 45.60,
-      recommendation: "Stop or terminate this t3.medium instance that has been idle for 15 days"
-    },
-    {
-      type: "EBS Volume",
-      id: "vol-0987654321fedcba0",
-      region: "us-west-2",
-      monthlySavings: 12.30,
-      recommendation: "Delete this unattached 50GB gp3 volume to save on storage costs"
-    },
-    {
-      type: "EBS Snapshot",
-      id: "snap-abcdef1234567890",
-      region: "eu-west-1",
-      monthlySavings: 8.75,
-      recommendation: "Delete snapshots older than 30 days or move to cheaper storage class"
-    },
-    {
-      type: "NAT Gateway",
-      id: "nat-0fedcba987654321",
-      region: "eu-central-1",
-      monthlySavings: 90.00,
-      recommendation: "Replace NAT Gateway with NAT Instance for lower traffic workloads"
-    }
-  ],
+  unusedResources: [],
   recommendations: [
     "Consider using Reserved Instances for EC2 workloads that run consistently to save up to 75%",
     "Enable S3 Intelligent Tiering to automatically optimize storage costs",
     "Right-size your RDS instances based on actual CPU and memory utilization",
     "Use AWS Lambda Provisioned Concurrency only when necessary to avoid idle charges",
-    "Set up CloudWatch billing alerts to monitor spending thresholds",
-    "Review and delete unused security groups, elastic IPs, and load balancers",
-    "Consider using Spot Instances for non-critical batch processing workloads"
+    "Set up CloudWatch billing alerts to monitor spending thresholds"
   ]
 };
 
@@ -137,18 +82,6 @@ export async function fetchCostSummary(): Promise<CostSummary> {
         cost: item.cost
       })) || []
     };
-  }
-}
-
-export async function fetchUnusedResources(): Promise<UnusedResource[]> {
-  try {
-    const res = await axios.get(`${BASE_URL}/api/audit`);
-    return res.data;
-  } catch (error) {
-    console.warn("Failed to fetch audit data from API, using mock data:", error);
-    // Fallback to mock data
-    await new Promise(resolve => setTimeout(resolve, 600));
-    return mockUnusedResources;
   }
 }
 
