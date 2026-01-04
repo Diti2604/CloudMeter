@@ -10,37 +10,70 @@ env:
     TF_DIR: terraform
 
 jobs:
-  deploy-to-s3:
+  # deploy-to-s3:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+
+  #     - name: Install dependencies
+  #       working-directory: frontend
+  #       run: npm install
+
+  #     - name: Build project
+  #       working-directory: frontend
+  #       run: npm run build
+
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: eu-central-1
+
+  #     - name: Sync files to S3
+  #       run: aws s3 sync frontend/dist/ s3://my-s3-bucket-for-static-website-hosting-5843205867340  --delete
+
+    #   - name: Invalidate CloudFront
+    #     run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+  #Uncomment this job to destroy all Terraform-managed resources
+  destroy-infrastructure:
     runs-on: ubuntu-latest
+    # Only run on manual trigger or specific branch/tag
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+  
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          node-version: '20'
-
-      - name: Install dependencies
-        working-directory: frontend
-        run: npm install
-
-      - name: Build project
-        working-directory: frontend
-        run: npm run build
-
+          terraform_version: 1.6.0
+  
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-central-1
-
-      - name: Sync files to S3
-        run: aws s3 sync frontend/dist/ s3://my-s3-bucket-for-static-website-hosting-5843205867340  --delete
-
-    #   - name: Invalidate CloudFront
-    #     run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+          aws-region: ${{ env.AWS_REGION }}
+  
+      - name: Terraform Init
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform init
+  
+      - name: Terraform Destroy
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform destroy -auto-approve
+  
+      - name: Empty S3 Bucket (if needed)
+        run: |
+          aws s3 rm s3://my-s3-bucket-for-static-website-hosting-5843205867340 --recursive || true
 
 
 
