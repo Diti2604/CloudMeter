@@ -40,7 +40,7 @@ jobs:
         run: aws s3 sync frontend/dist/ s3://my-s3-bucket-for-static-website-hosting-5843205867340  --delete
 
       - name: Invalidate CloudFront
-        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id E25RUVFUPO0VDZ --paths "/*"
 
   # #Uncomment this job to destroy all Terraform-managed resources
   # destroy-infrastructure:
