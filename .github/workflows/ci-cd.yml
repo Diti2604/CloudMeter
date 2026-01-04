@@ -45,8 +45,7 @@ jobs:
   #Uncomment this job to destroy all Terraform-managed resources
   destroy-infrastructure:
     runs-on: ubuntu-latest
-    # Only run on manual trigger or specific branch/tag
-    if: github.event_name == 'workflow_dispatch'
+    # Only run on manual trigger
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
