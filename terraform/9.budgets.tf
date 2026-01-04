@@ -67,7 +67,7 @@ resource "aws_budgets_budget" "daily_cost" {
 
   notification {
     comparison_operator        = "GREATER_THAN"
-    threshold                  = 100
+    threshold                  = 80
     threshold_type             = "PERCENTAGE"
     notification_type          = "ACTUAL"
     subscriber_email_addresses = ["indritferati04@gmail.com"]
@@ -75,9 +75,9 @@ resource "aws_budgets_budget" "daily_cost" {
 
   notification {
     comparison_operator        = "GREATER_THAN"
-    threshold                  = 80
+    threshold                  = 100
     threshold_type             = "PERCENTAGE"
-    notification_type          = "FORECASTED"
+    notification_type          = "ACTUAL"
     subscriber_email_addresses = ["indritferati04@gmail.com"]
   }
 }

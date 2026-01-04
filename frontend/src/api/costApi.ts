@@ -14,10 +14,10 @@ const mockCostSummary: CostSummary = {
   periodEnd: "2024-10-31T23:59:59Z",
   weeklyDeltaPercent: -12.5,
   byTag: [
-    { tag: "Production", cost: 687.45 },
-    { tag: "Development", cost: 234.20 },
-    { tag: "Testing", cost: 156.80 },
-    { tag: "Staging", cost: 169.40 }
+    { tag: "Amazon EC2", cost: 687.45 },
+    { tag: "Amazon S3", cost: 234.20 },
+    { tag: "Amazon RDS", cost: 156.80 },
+    { tag: "AWS Lambda", cost: 169.40 }
   ]
 };
 
